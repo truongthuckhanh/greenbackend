@@ -34,7 +34,7 @@ module.exports = {
                 await Promise.all([Device.deleteMany(), collectedData.deleteMany()]);
                 console.log("DB cleaned");
 
-                const numberOfDevices = 4;
+                const numberOfDevices = 50;
                 console.log(`Adding ${numberOfDevices} devices to DB`);
                 await Device.populateDBWithDummyData(numberOfDevices);
                 console.log(`Finished populating the DB with ${numberOfDevices} devices`);
@@ -44,7 +44,7 @@ module.exports = {
             });
 
             async function dataInit() {
-                const numberOfCollectedData = 2;
+                const numberOfCollectedData = 10;
                 console.log(`Adding ${numberOfCollectedData} data field to each device`);
                 await collectedData.populateDeviceWithDummyData(numberOfCollectedData);
                 console.log(`Finished populating each device with ${numberOfCollectedData} data field`);
@@ -67,7 +67,6 @@ module.exports = {
         try {
             const getOneDevice = await Device.find({deviceID: req.params.deviceID})
                 .lean()
-                .select({_id: 1, deviceID: 1, deviceName: 1})
                 .then(result => {
                     console.log(result);
                     res.status(200).json({
