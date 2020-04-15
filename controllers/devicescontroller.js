@@ -34,7 +34,7 @@ module.exports = {
                 await Promise.all([Device.deleteMany(), collectedData.deleteMany()]);
                 console.log("DB cleaned");
 
-                const numberOfDevices = 2;
+                const numberOfDevices = 5;
                 console.log(`Adding ${numberOfDevices} devices to DB`);
                 await Device.populateDBWithDummyData(numberOfDevices);
                 console.log(`Finished populating the DB with ${numberOfDevices} devices`);
@@ -51,6 +51,7 @@ module.exports = {
             await dataInit();
             return res.status(200).json({
                 type: "1",
+                message: 'Devices created'
             });
         } catch (err) {
             console.log("Error " + err);

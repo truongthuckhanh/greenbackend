@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const express = require("express");
 const bodyParser = require("body-parser");
 
-//const cors = require('cors');
+const cors = require('cors');
 const http = require("http");
 const morgan = require("morgan");
 const cluster = require("cluster");
@@ -16,16 +16,7 @@ const router = express.Router;
 const upload = require("./routes/upload");
 
 const app = express();
-const path = require("path");
 const port = process.env.PORT;
-
-const elasticsearch = require('elasticsearch');
-const client = new elasticsearch.Client({
-    host: 'localhost:9200'
-});
-
-//server.listen(port, () => console.log("Server is running on port " + port));
-//app.use(cors());
 
 //const userRoutes = require('./routes/user');
 const deviceRoutes = require("./routes/device");
@@ -77,6 +68,9 @@ const setupExpress = () => {
 
     //logger
     app.use(morgan("tiny"));
+
+    //cors
+    app.use(cors());
 
     //parse application/json
     app.use(bodyParser.json({
