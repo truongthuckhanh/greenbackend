@@ -75,6 +75,7 @@ CollectedData.populateDeviceWithDummyData = function (numberOfCollectedData) {
         const devices = await Devices.find()
             .lean()
             .select({deviceID: 1});
+        console.log(devices);
         if (devices < 1) {
             console.log("No devices in database");
         } else {
