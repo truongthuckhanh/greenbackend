@@ -34,15 +34,17 @@ module.exports = {
                 await Promise.all([Device.deleteMany(), collectedData.deleteMany()]);
                 console.log("DB cleaned");
 
-                const numberOfDevices = 5;
+                const numberOfDevices = 4;
                 console.log(`Adding ${numberOfDevices} devices to DB`);
                 await Device.populateDBWithDummyData(numberOfDevices);
                 console.log(`Finished populating the DB with ${numberOfDevices} devices`);
             }
-            await init();
+            await init().then(async () => {
+                const device = await Device.find();
+            });
 
             async function dataInit() {
-                const numberOfCollectedData = 1;
+                const numberOfCollectedData = 2;
                 console.log(`Adding ${numberOfCollectedData} data field to each device`);
                 await collectedData.populateDeviceWithDummyData(numberOfCollectedData);
                 console.log(`Finished populating each device with ${numberOfCollectedData} data field`);
@@ -51,7 +53,7 @@ module.exports = {
             await dataInit();
             return res.status(200).json({
                 type: "1",
-                message: 'Devices created'
+                message: 'Device and data created successfully'
             });
         } catch (err) {
             console.log("Error " + err);

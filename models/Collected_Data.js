@@ -72,13 +72,14 @@ const CollectedData = mongoose.model("CollectedData", Collected_DataSchema);
 
 CollectedData.populateDeviceWithDummyData = function (numberOfCollectedData) {
     (async () => {
-        const devices = await Devices.find();
-        console.log(devices);
+        const devices = await Devices.find()
+            .lean()
+            .select({deviceID: 1});
         if (devices < 1) {
             console.log("No devices in database");
         } else {
-            for (let i = 0; i <= devices.length; i++) {
-                const docs = await [...new Array(numberOfCollectedData)].map(_ => ({
+            for (let i = 0; i < devices.length; i++) {
+                const docs = [...new Array(numberOfCollectedData)].map(_ => ({
                     deviceID: devices[i].deviceID,
                     created_at: Date.now(),
                     message_code: casual.double(10, 1000),
