@@ -20,6 +20,7 @@ const port = process.env.PORT;
 
 //const userRoutes = require('./routes/user');
 const deviceRoutes = require("./routes/device");
+const mlRoutes = require("./routes/ml");
 
 let workers = [];
 
@@ -83,6 +84,7 @@ const setupExpress = () => {
     // routes
     //app.use('/user', userRoutes);
     app.use("/api/devices", deviceRoutes);
+    app.use("/api/ml", mlRoutes);
     //app.use('/uploads', express.static('uploads'));
     app.use(express.static(__dirname + "/public"));
     app.use(upload);

@@ -10,7 +10,8 @@ router.route("/").get(DevicesController.getDevices)
                                .post(DevicesController.postDevice);
 
 router.route("/:deviceID").get(DevicesController.getOneDevice)
-    .delete(DevicesController.deleteOneDevice);
+    .delete(DevicesController.deleteOneDevice)
+    .put(DevicesController.updateOneDevice);
 
 router.route("/:deviceID/message").get(DataController.getCollectedData);
     // .post(DataController.createCollectedData);

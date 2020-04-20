@@ -260,7 +260,6 @@ DeviceSchema.index({deviceName: 1, deviceID: 1}, {unique: true, sparse: true});
 const Devices = mongoose.model("Devices", DeviceSchema);
 
 Devices.populateDBWithDummyData = function (numberOfDevices) {
-    (async () => {
         const docs = [...new Array(numberOfDevices)].map(_ => ({
             deviceID: randomize("A0", 6),
             deviceName: casual.full_name,
@@ -290,8 +289,7 @@ Devices.populateDBWithDummyData = function (numberOfDevices) {
                 criteria_reverse: casual.boolean
             }
         }));
-        await Promise.all([Devices.insertMany(docs)]);
-    })();
+        return Promise.all([Devices.insertMany(docs)]);
 };
 
 module.exports = Devices;
