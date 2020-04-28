@@ -7,7 +7,7 @@ module.exports = {
             const devices = await Device.find()
                     .lean()
                     .sort({deviceName: 1})
-                    .select({_id: 1, deviceID: 1, deviceName: 1});
+                    .select({_id: 1, deviceID: 1, deviceName: 1, sensors: 1});
                 if (devices < 1) {
                     return res.status(200).json({
                         message: "No devices created in database"
@@ -29,33 +29,51 @@ module.exports = {
 
     postDevice: async (req, res, next) => {
         try {
-            async function init() {
-                console.log("Cleaning DB");
-                await Promise.all([Device.deleteMany(), collectedData.deleteMany()]);
-                console.log("DB cleaned");
-
-                const numberOfDevices = 50;
-                console.log(`Adding ${numberOfDevices} devices to DB`);
-                await Device.populateDBWithDummyData(numberOfDevices);
-                console.log(`Finished populating the DB with ${numberOfDevices} devices`);
-
-                return true;
-            }
-            await init();
-
-            async function dataInit() {
-                const numberOfCollectedData = 10;
-                console.log(`Adding ${numberOfCollectedData} data field to each device`);
-                await collectedData.populateDeviceWithDummyData(numberOfCollectedData);
-                console.log(`Finished populating each device with ${numberOfCollectedData} data field`);
-            }
-
-            await dataInit();
-
-            return res.status(200).json({
-                type: "1",
-                message: 'Device and data created successfully'
-            });
+            // async function init() {
+            //     console.log("Cleaning DB");
+            //     await Promise.all([Device.deleteMany(), collectedData.deleteMany()]);
+            //     console.log("DB cleaned");
+            //
+            //     const numberOfDevices = 50;
+            //     console.log(`Adding ${numberOfDevices} devices to DB`);
+            //     await Device.populateDBWithDummyData(numberOfDevices);
+            //     console.log(`Finished populating the DB with ${numberOfDevices} devices`);
+            //
+            //     return true;
+            // }
+            // await init();
+            //
+            // async function dataInit() {
+            //     const numberOfCollectedData = 10;
+            //     console.log(`Adding ${numberOfCollectedData} data field to each device`);
+            //     await collectedData.populateDeviceWithDummyData(numberOfCollectedData);
+            //     console.log(`Finished populating each device with ${numberOfCollectedData} data field`);
+            // }
+            //
+            // await dataInit();
+            Device.findOne({deviceID: req.body.deviceID})
+                .then(async (device) => {
+                    if (device) {
+                        return res.status(200).json({
+                            type: "1",
+                            message: 'One device has that ID, please change your ID'
+                        });
+                    } else {
+                        const newDevice = new Device({
+                            deviceID: req.body.deviceID,
+                            deviceName: req.body.deviceName
+                        });
+                        for (let i = 0; i < req.body.sensorCount; i++) {
+                            newDevice.sensors[i] = req.body.sensors[i];
+                        }
+                        const dataAttached = new collectedData({deviceID: req.body.deviceID});
+                        await Promise.all([dataAttached.save(), newDevice.save()]);
+                        return res.status(200).json({
+                            type: "1",
+                            message: 'Device and data created successfully'
+                        });
+                    }
+                });
         } catch (err) {
             console.log("Error " + err);
             res.status(400).json({

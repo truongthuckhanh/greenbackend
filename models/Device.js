@@ -22,18 +22,6 @@ const DeviceSchema = new Schema({
     frequency: {type: String, default: "60"},
     sensors: [
     // {
-    //     id: {type: String, default: "0000"},
-    //     name: "distance_maxbotix_raw",
-    //     lastValue: null,
-    //     currentAlertThreshold: "null<>null",
-    //     sensorType: "analog",
-    //     startTime: "",
-    //     sensorOnAlert: "",
-    //     databaseFormat: "number",
-    //     driverName: "DRIVER_MAXBOTIX_RS232",
-    //     dataSize: ""
-    // },
-    // {
     //     id: "1111",
     //     name: "temperature_air_carte",
     //     lastValue: null,
