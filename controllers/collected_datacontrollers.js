@@ -25,6 +25,7 @@ module.exports = {
 
     deleteData: async (req, res, next) => {
         try {
+            console.log(req.body);
             for (let i = 0; i < req.body.dataDeleteID.length; i++) {
                 console.log(req.body.dataDeleteID[i]);
                 await Promise.all([collectedData.deleteOne({

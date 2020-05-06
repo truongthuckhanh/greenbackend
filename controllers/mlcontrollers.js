@@ -45,9 +45,16 @@ module.exports = {
             output.print();
         });
 
+        const arr = new Array(3);
+        arr[0] = "Khanh";
+        arr[1] = "Như";
+        const body = {
+            deleteDataID: arr
+        };
+
 
         res.status(200).json({
-
+            data: body
         })
     }
 };
