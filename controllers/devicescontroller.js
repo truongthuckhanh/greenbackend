@@ -1,5 +1,6 @@
 const Device = require("../models/Device");
 const collectedData = require("../models/Collected_Data");
+const casual = require("casual");
 
 module.exports = {
     getDevices: async (req, res, next) => {
@@ -31,9 +32,7 @@ module.exports = {
         try {
             // async function init() {
             //     console.log("Cleaning DB");
-            //     await Promise.all([Device.deleteMany(), collectedData.deleteMany()]);
             //     console.log("DB cleaned");
-            //
             //     const numberOfDevices = 50;
             //     console.log(`Adding ${numberOfDevices} devices to DB`);
             //     await Device.populateDBWithDummyData(numberOfDevices);
@@ -63,14 +62,26 @@ module.exports = {
                             deviceID: req.body.deviceID,
                             deviceName: req.body.deviceName
                         });
-                        for (let i = 0; i < req.body.sensorCount; i++) {
-                            newDevice.sensors[i] = req.body.sensors[i];
+                        var idField = {
+                            deviceID: newDevice.deviceID
+                        };
+                        for (let j = 0; j < 50; j++) {
+                            for (let i = 0; i < req.body.sensorCount; i++) {
+                                newDevice.sensors[i] = req.body.sensors[i];
+                                let newField = {
+                                    [newDevice.sensors[i].sensorName]: casual.double(0, 1000)
+                                };
+                                idField = Object.assign(idField, newField);
+                            }
+                            var dataAttached = new collectedData(idField);
+                            dataAttached.created_at = Date.now();
+                            await Promise.all([dataAttached.save()]);
                         }
-                        const dataAttached = new collectedData({deviceID: req.body.deviceID});
-                        await Promise.all([dataAttached.save(), newDevice.save()]);
+                        await Promise.all([newDevice.save()]);
+
                         return res.status(200).json({
                             type: "1",
-                            message: 'Device and data created successfully'
+                            message: 'Device and data created successfully',
                         });
                     }
                 });
@@ -85,13 +96,11 @@ module.exports = {
     getOneDevice: async (req, res, next) => {
         try {
             const getOneDevice = await Device.find({deviceID: req.params.deviceID})
-                .lean()
-                .then(result => {
-                    res.status(200).json({
-                        type: 1,
-                        device: result
-                    });
-                });
+                .lean();
+            res.status(200).json({
+                type: 1,
+                device: getOneDevice
+            });
         } catch (err) {
             console.log("Error " + err);
             res.status(400).json({
@@ -129,6 +138,60 @@ module.exports = {
             console.log("Error " + err);
             res.status(400).json({
                 message: err
+            });
+        }
+    },
+
+    updateSensorName: async (req, res, next) => {
+        try {
+            await Promise.all([Device.updateOne({
+                deviceID: req.params.deviceID,
+                sensors: {$elemMatch: {sensorName: req.body.sensorName}}
+            },{
+                $set: {"sensors.$.sensorName": req.body.newSensorName}
+            })]).then(async () => {
+                await Promise.all([collectedData.updateMany({
+                    deviceID: req.params.deviceID
+                },{
+                    $rename: {[req.body.sensorName] : req.body.newSensorName}
+                })])
+            });
+            return res.status(200).json({
+                type: '1',
+                message: 'Sensor updated'
+            });
+        } catch (err) {
+            return res.status(200).json({
+                type: '0',
+                error: err
+            });
+        }
+
+    },
+
+    deleteSensors: async (req, res, next) => {
+        try {
+            for (let i = 0; i < req.body.sensorsDeleteName.length; i++) {
+                await Promise.all([Device.updateOne({
+                    deviceID: req.params.deviceID,
+                }, {
+                    $pull: {sensors: {sensorName: req.body.sensorsDeleteName[i]}}
+                })]).then(async () => {
+                    await Promise.all([collectedData.updateMany({
+                        deviceID: req.params.deviceID
+                    }, {
+                        $unset: {[req.body.sensorsDeleteName[i]] : ""}
+                    })]);
+                });
+            }
+            return res.status(200).json({
+                type: '1',
+                message: 'Sensors deleted'
+            });
+        } catch (err) {
+            return res.status(200).json({
+                type: '0',
+                error: err
             });
         }
     }

@@ -13,7 +13,11 @@ router.route("/:deviceID").get(DevicesController.getOneDevice)
     .delete(DevicesController.deleteOneDevice)
     .put(DevicesController.updateOneDevice);
 
-router.route("/:deviceID/message").get(DataController.getCollectedData);
+router.route("/:deviceID/sensor").put(DevicesController.updateSensorName)
+    .delete(DevicesController.deleteSensors);
+
+router.route("/:deviceID/message").get(DataController.getCollectedData)
+    .delete(DataController.deleteData);
     // .post(DataController.createCollectedData);
 
 module.exports = router;

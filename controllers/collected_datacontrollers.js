@@ -23,17 +23,26 @@ module.exports = {
         }
     },
 
-    // createCollectedData: async (req, res, next) => {
-    //     try {
-    //         const newDataCollected = new collectedData({
-    //             deviceID: req.params.deviceID
-    //         });
-    //         newDataCollected.save();
-    //     } catch (err) {
-    //         console.log('Error' + err);
-    //         res.status(400).json({
-    //             message: err
-    //         });
-    //     }
-    // }
+    deleteData: async (req, res, next) => {
+        try {
+            for (let i = 0; i < req.body.dataDeleteID.length; i++) {
+                console.log(req.body.dataDeleteID[i]);
+                await Promise.all([collectedData.deleteOne({
+                    deviceID: req.params.deviceID,
+                    _id: req.body.dataDeleteID[i]
+                })]);
+            }
+            console.log("code is here");
+            return res.status(200).json({
+                type: '1',
+                message: 'Data deleted'
+            });
+        } catch (err) {
+            console.log(err);
+            return res.status(400).json({
+                type: '0',
+                error: err
+            });
+        }
+    }
 };
