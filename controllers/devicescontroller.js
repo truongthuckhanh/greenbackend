@@ -50,6 +50,7 @@ module.exports = {
             // }
             //
             // await dataInit();
+            console.log(req.body);
             Device.findOne({deviceID: req.body.deviceID})
                 .then(async (device) => {
                     if (device) {
@@ -95,6 +96,7 @@ module.exports = {
 
     getOneDevice: async (req, res, next) => {
         try {
+            console.log(req.body);
             const getOneDevice = await Device.find({deviceID: req.params.deviceID})
                 .lean();
             res.status(200).json({
@@ -171,6 +173,7 @@ module.exports = {
 
     deleteSensors: async (req, res, next) => {
         try {
+            console.log(req.body);
             for (let i = 0; i < req.body.sensorsDeleteName.length; i++) {
                 await Promise.all([Device.updateOne({
                     deviceID: req.params.deviceID,

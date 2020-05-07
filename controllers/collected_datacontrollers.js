@@ -3,6 +3,7 @@ const collectedData = require("../models/Collected_Data");
 module.exports = {
     getCollectedData: async (req, res, next) => {
         try {
+            console.log(req.body);
             const getcollected_Data = await collectedData.find({deviceID: req.params.deviceID});
             if (getcollected_Data < 1) {
                 return res.status(200).json({
