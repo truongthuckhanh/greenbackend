@@ -50,6 +50,7 @@ module.exports = {
             // }
             //
             // await dataInit();
+
             console.log(req.body);
             Device.findOne({deviceID: req.body.deviceID})
                 .then(async (device) => {
@@ -63,20 +64,8 @@ module.exports = {
                             deviceID: req.body.deviceID,
                             deviceName: req.body.deviceName
                         });
-                        var idField = {
-                            deviceID: newDevice.deviceID
-                        };
-                        for (let j = 0; j < 50; j++) {
-                            for (let i = 0; i < req.body.sensorCount; i++) {
-                                newDevice.sensors[i] = req.body.sensors[i];
-                                let newField = {
-                                    [newDevice.sensors[i].sensorName]: casual.double(0, 1000)
-                                };
-                                idField = Object.assign(idField, newField);
-                            }
-                            var dataAttached = new collectedData(idField);
-                            dataAttached.created_at = Date.now();
-                            await Promise.all([dataAttached.save()]);
+                        for (let i = 0; i < req.body.sensorCount; i++) {
+                            newDevice.sensors[i] = req.body.sensors[i];
                         }
                         await Promise.all([newDevice.save()]);
 

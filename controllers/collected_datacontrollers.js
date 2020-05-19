@@ -3,8 +3,14 @@ const collectedData = require("../models/Collected_Data");
 module.exports = {
     getCollectedData: async (req, res, next) => {
         try {
-            console.log(req.body);
-            const getcollected_Data = await collectedData.find({deviceID: req.params.deviceID});
+            const {page, limit} = req.query;
+            const options = {
+                lean: true,
+                sort: {created_at: -1},
+                page: parseInt(page),
+                limit: parseInt(limit)
+            };
+            const getcollected_Data = await collectedData.paginate({deviceID: req.params.deviceID}, options);
             if (getcollected_Data < 1) {
                 return res.status(200).json({
                     message: "Data cannot be collected from this device"
@@ -22,6 +28,10 @@ module.exports = {
                 message: err
             });
         }
+    },
+
+    TTNPostData: async (req, res, next) => {
+
     },
 
     deleteData: async (req, res, next) => {

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
 const casual = require("casual");
 const randomize = require("randomatic");
 
@@ -243,7 +244,8 @@ const DeviceSchema = new Schema({
 }
 });
 
-DeviceSchema.index({deviceName: 1, deviceID: 1}, {unique: true, sparse: true});
+DeviceSchema.plugin(mongoosePaginate);
+DeviceSchema.index({deviceID: 1}, {unique: true, sparse: true});
 
 const Devices = mongoose.model("Devices", DeviceSchema);
 
