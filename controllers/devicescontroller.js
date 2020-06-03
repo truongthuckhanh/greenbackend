@@ -1,9 +1,8 @@
 const Device = require("../models/Device");
 const collectedData = require("../models/Collected_Data");
-const casual = require("casual");
 
 module.exports = {
-    getDevices: async (req, res, next) => {
+    getDevices: async (req, res) => {
         try {
             const devices = await Device.find()
                     .lean()
@@ -28,7 +27,7 @@ module.exports = {
         }
     },
 
-    postDevice: async (req, res, next) => {
+    postDevice: async (req, res) => {
         try {
             // async function init() {
             //     console.log("Cleaning DB");
@@ -57,7 +56,7 @@ module.exports = {
                     if (device) {
                         return res.status(200).json({
                             type: "1",
-                            message: 'One device has that ID, please change your ID'
+                            message: "One device has that ID, please change your ID"
                         });
                     } else {
                         const newDevice = new Device({
@@ -71,7 +70,7 @@ module.exports = {
 
                         return res.status(200).json({
                             type: "1",
-                            message: 'Device and data created successfully',
+                            message: "Device and data created successfully",
                         });
                     }
                 });
@@ -83,7 +82,7 @@ module.exports = {
         }
     },
 
-    getOneDevice: async (req, res, next) => {
+    getOneDevice: async (req, res) => {
         try {
             console.log(req.body);
             const getOneDevice = await Device.find({deviceID: req.params.deviceID})
@@ -100,7 +99,7 @@ module.exports = {
         }
     },
 
-    deleteOneDevice: async (req, res, next) => {
+    deleteOneDevice: async (req, res) => {
         try {
             await Promise.all([Device.deleteOne({deviceID: req.params.deviceID}), collectedData.deleteMany({deviceID: req.params.deviceID})]);
             res.status(200).json({
@@ -115,14 +114,14 @@ module.exports = {
         }
     },
 
-    updateOneDevice: async (req, res, next) => {
+    updateOneDevice: async (req, res) => {
         try {
             await Promise.all([Device.updateOne(
                 {deviceID: req.params.deviceID},
                 { $set: req.body }
             )]);
             res.status(200).json({
-                type: '1',
+                type: "1",
                 message: `Successfully update device with ID ${req.params.deviceID}`
             });
         } catch (err) {
@@ -133,7 +132,7 @@ module.exports = {
         }
     },
 
-    updateSensorName: async (req, res, next) => {
+    updateSensorName: async (req, res) => {
         try {
             await Promise.all([Device.updateOne({
                 deviceID: req.params.deviceID,
@@ -145,22 +144,22 @@ module.exports = {
                     deviceID: req.params.deviceID
                 },{
                     $rename: {[req.body.sensorName] : req.body.newSensorName}
-                })])
+                })]);
             });
             return res.status(200).json({
-                type: '1',
-                message: 'Sensor updated'
+                type: "1",
+                message: "Sensor updated"
             });
         } catch (err) {
             return res.status(200).json({
-                type: '0',
+                type: "0",
                 error: err
             });
         }
 
     },
 
-    deleteSensors: async (req, res, next) => {
+    deleteSensors: async (req, res) => {
         try {
             console.log(req.body);
             for (let i = 0; i < req.body.sensorsDeleteName.length; i++) {
@@ -177,12 +176,12 @@ module.exports = {
                 });
             }
             return res.status(200).json({
-                type: '1',
-                message: 'Sensors deleted'
+                type: "1",
+                message: "Sensors deleted"
             });
         } catch (err) {
             return res.status(200).json({
-                type: '0',
+                type: "0",
                 error: err
             });
         }

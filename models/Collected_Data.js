@@ -9,6 +9,7 @@ const Collected_DataSchema = new Schema({
     error_out_of_range: [],
     null_fields: [],
     created_at: {type: Date, default: Date.now()},
+    time: {type: String},
    dateToExpired: {type: String}
 }, {
     strict: false
