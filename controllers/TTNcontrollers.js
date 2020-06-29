@@ -13,6 +13,7 @@ module.exports = {
             });
             for (let i = 0; i < deleteDate.length; i++) {
                 deleteDate[i].dateToExpired = moment(`${deleteDate[i].created_at}`).fromNow();
+                console.log(moment(`${deleteDate[i].created_at}`).fromNow());
                 await Promise.all([deleteDate[i].save(), collectedData.deleteMany({dateToExpired: "10 days ago"})]);
             }
             if (req.body.device_id == null) {
