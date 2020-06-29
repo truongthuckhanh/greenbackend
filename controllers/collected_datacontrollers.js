@@ -25,7 +25,7 @@ module.exports = {
                     });
                 }
             } else {
-                const getCollectedData = await collectedData.find().lean().sort({created_at: -1});
+                const getCollectedData = await collectedData.find({devideID: req.params.deviceID}).lean().sort({created_at: -1});
                 if (getCollectedData < 1) {
                     return res.status(200).json({
                         message: "Data cannot be collected from this device"
