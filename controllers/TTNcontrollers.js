@@ -24,14 +24,16 @@ module.exports = {
                 };
                 for (let i = 0; i < device.sensors.length; i++) {
                     let max = 50;
+                    let value = Object.values(req.body)[i+1];
                     if (typeof Object.values(req.body)[i+1] !== "number") {
                         break;
                     }
                     if (i+1 === 2) {
                         max = 0;
+                        value = -value;
                     }
                     let newField = {
-                            [device.sensors[i].sensorName]: max - Object.values(req.body)[i+1]
+                            [device.sensors[i].sensorName]: max - value
                         };
                     idField = Object.assign(idField, newField);
                 }
