@@ -97,13 +97,8 @@ const setupExpress = () => {
     (async () => {
         try {
             mongoose.Promise = global.Promise;
-            await mongoose.connect(process.env.DB_CONNECTION, {
-                useUnifiedTopology: true,
-                useCreateIndex: true,
-                useNewUrlParser: true
-            }).then(() => {
-                console.log("MONGODB Database is connected");
-            });
+            await mongoose.connect(process.env.DB_CONNECTION, {useUnifiedTopology: true, useCreateIndex: true, useNewUrlParser: true
+            }).then(() => { console.log("MONGODB Database is connected");});
             mongoose.set("useFindAndModify", false);
         } catch (err) {
             console.error(err);

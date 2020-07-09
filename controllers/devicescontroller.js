@@ -101,7 +101,8 @@ module.exports = {
 
     deleteOneDevice: async (req, res) => {
         try {
-            await Promise.all([Device.deleteOne({deviceID: req.params.deviceID}), collectedData.deleteMany({deviceID: req.params.deviceID})]);
+            await Promise.all([Device.deleteOne({deviceID: req.params.deviceID}),
+                collectedData.deleteMany({deviceID: req.params.deviceID})]);
             res.status(200).json({
                 type: "success",
                 message: `Successfully delete device with ID ${req.params.deviceID} and data attached`

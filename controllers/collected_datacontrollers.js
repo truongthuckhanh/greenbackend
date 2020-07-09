@@ -61,7 +61,7 @@ module.exports = {
           })
               .lean()
               .sort({
-                  created_at: -1
+                  created_at: 1
               });
           for (let i = 0; i < sensorChart.sensors.length; i++) {
               let newObject = {
