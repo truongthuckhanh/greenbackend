@@ -72,7 +72,7 @@ module.exports = {
           for (let j = 0; j < Object.keys(sensorObject).length; j++) {
               for (let n = 0; n < messageChart.length; n++) {
                   let dataChart = [messageChart[n].time, messageChart[n][Object.keys(sensorObject)[j]]];
-                  Object.values(sensorObject)[j] = await Object.values(sensorObject)[j].unshift(dataChart);
+                  Object.values(sensorObject)[j] = await Object.values(sensorObject)[j].push(dataChart);
               }
           }
           sensorObject = await Object.assign({
